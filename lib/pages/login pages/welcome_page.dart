@@ -46,7 +46,6 @@ class WelcomePage extends StatelessWidget {
               width: 100,
               child: OutlinedButton(
                 onPressed: () {
-                  print('Login button Pressed');
                   Get.toNamed(RouteHelper.getLogin());
                 },
                 style: OutlinedButton.styleFrom(
@@ -61,7 +60,6 @@ class WelcomePage extends StatelessWidget {
               width: 100,
               child: OutlinedButton(
                 onPressed: () {
-                  print('Signup button pressed');
                   Get.toNamed(RouteHelper.getSignup());
                 },
                 style: OutlinedButton.styleFrom(
