@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:watercooler/routes/route_helper.dart';
 import 'package:watercooler/utils/colors.dart';
+import 'package:get/get.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -45,6 +47,7 @@ class WelcomePage extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: () {
                   print('Login button Pressed');
+                  Get.toNamed(RouteHelper.getLogin());
                 },
                 style: OutlinedButton.styleFrom(
                   primary: AppColors.textColor,
@@ -59,6 +62,7 @@ class WelcomePage extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: () {
                   print('Signup button pressed');
+                  Get.toNamed(RouteHelper.getSignup());
                 },
                 style: OutlinedButton.styleFrom(
                   primary: Colors.white,
