@@ -4,7 +4,7 @@ import '../../routes/route_helper.dart';
 import '../../utils/colors.dart';
 
 class SignupPage extends StatelessWidget {
-  const SignupPage({ Key? key }) : super(key: key);
+  const SignupPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +26,13 @@ class SignupPage extends StatelessWidget {
                   size: 40.0,
                 ),
               ),
-              const SizedBox(height: 150),
+              const SizedBox(height: 100),
               // title
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
                   Text(
-                    "Sign Up", 
+                    "Sign Up",
                     style: TextStyle(
                       fontSize: 40.0,
                     ),
@@ -57,20 +57,20 @@ class SignupPage extends StatelessWidget {
                   labelText: 'Password',
                 ),
               ),
-              const SizedBox(height: 100),
+              const SizedBox(height: 40),
               // sign up button
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   OutlinedButton(
                     onPressed: () {
-                      print('Sign up button pressed');
+                      Get.toNamed(RouteHelper.getHome());
                     },
                     style: OutlinedButton.styleFrom(
-                      primary: Colors.white,
-                      backgroundColor: AppColors.textColor,
-                      padding: const EdgeInsets.only(top: 20, bottom: 20, left: 50, right: 50)
-                    ),
+                        primary: Colors.white,
+                        backgroundColor: AppColors.textColor,
+                        padding: const EdgeInsets.only(
+                            top: 20, bottom: 20, left: 50, right: 50)),
                     child: const Text("Sign Up"),
                   ),
                 ],

@@ -26,13 +26,13 @@ class LoginPage extends StatelessWidget {
                   size: 40.0,
                 ),
               ),
-              const SizedBox(height: 150),
+              const SizedBox(height: 100),
               // title
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
                   Text(
-                    "Login", 
+                    "Login",
                     style: TextStyle(
                       fontSize: 40.0,
                     ),
@@ -57,21 +57,20 @@ class LoginPage extends StatelessWidget {
                   labelText: 'Password',
                 ),
               ),
-              const SizedBox(height: 100),
+              const SizedBox(height: 40),
               // login button
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   OutlinedButton(
                     onPressed: () {
-                      print('Login button pressed');
-                
+                      Get.toNamed(RouteHelper.getHome());
                     },
                     style: OutlinedButton.styleFrom(
-                      primary: Colors.white,
-                      backgroundColor: AppColors.textColor,
-                      padding: const EdgeInsets.only(top: 20, bottom: 20, left: 50, right: 50)
-                    ),
+                        primary: Colors.white,
+                        backgroundColor: AppColors.textColor,
+                        padding: const EdgeInsets.only(
+                            top: 20, bottom: 20, left: 50, right: 50)),
                     child: const Text("Login"),
                   ),
                 ],
