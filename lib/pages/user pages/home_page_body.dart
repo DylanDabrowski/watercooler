@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:watercooler/controllers/events_controller.dart';
+import 'package:watercooler/widgets/expandable_text_widget.dart';
+import '../../models/event_model.dart';
 import '../../routes/route_helper.dart';
+import '../../utils/app_constants.dart';
 import '../../utils/colors.dart';
 import '../../utils/dimensions.dart';
+import '../../widgets/app_column.dart';
 import '../../widgets/big_text.dart';
 import '../../widgets/icon_and_text_widget.dart';
 import '../../widgets/small_text.dart';
@@ -41,26 +46,35 @@ class _HomePageBodyState extends State<HomePageBody> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          // color: Colors.red,
-          height: Dimensions.pageView,
-          child: PageView.builder(
-              controller: pageController,
-              itemCount: 5,
-              itemBuilder: (context, position) {
-                return _buildPageItem(position);
-              }),
-        ),
-        DotsIndicator(
-          dotsCount: 5,
-          position: _currPageValue,
-          decorator: DotsDecorator(
-              size: const Size.square(9.0),
-              activeSize: const Size(18.0, 9.0),
-              activeShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0)),
-              activeColor: AppColors.mainColor),
-        ),
+        GetBuilder<EventsController>(builder: (events) {
+          return events.isLoaded
+              ? Container(
+                  // color: Colors.red,
+                  height: Dimensions.pageView,
+                  child: PageView.builder(
+                      controller: pageController,
+                      itemCount: 5,
+                      itemBuilder: (context, position) {
+                        return _buildPageItem(
+                            position, events.eventsList[position]);
+                      }),
+                )
+              : const CircularProgressIndicator(
+                  color: AppColors.mainColor,
+                );
+        }),
+        GetBuilder<EventsController>(builder: (events) {
+          return DotsIndicator(
+            dotsCount: events.eventsList.isEmpty ? 1 : 5,
+            position: _currPageValue,
+            decorator: DotsDecorator(
+                size: const Size.square(9.0),
+                activeSize: const Size(18.0, 9.0),
+                activeShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0)),
+                activeColor: AppColors.mainColor),
+          );
+        }),
         SizedBox(
           height: Dimensions.height30,
         ),
@@ -136,26 +150,24 @@ class _HomePageBodyState extends State<HomePageBody> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              BigText(text: "Nutritious fruit meal in China"),
-                              SizedBox(height: Dimensions.height10),
-                              SmallText(text: "With chinese characteristics"),
+                              BigText(text: "Halloween Party!"),
                               SizedBox(height: Dimensions.height10),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: const [
                                   IconAndTextWidget(
-                                      icon: Icons.circle_sharp,
-                                      text: "Normal",
-                                      iconColor: AppColors.mainColor),
+                                      icon: Icons.calendar_month,
+                                      text: "04/01/22",
+                                      iconColor: AppColors.secondaryColor),
                                   IconAndTextWidget(
                                       icon: Icons.location_on,
-                                      text: "1.7km",
+                                      text: "G101",
                                       iconColor: AppColors.mainColor),
                                   IconAndTextWidget(
                                       icon: Icons.access_time_rounded,
-                                      text: "32min",
-                                      iconColor: AppColors.secondaryColor),
+                                      text: "1h30m",
+                                      iconColor: AppColors.textColor),
                                 ],
                               ),
                             ],
@@ -171,7 +183,7 @@ class _HomePageBodyState extends State<HomePageBody> {
     );
   }
 
-  Widget _buildPageItem(int index) {
+  Widget _buildPageItem(int index, Event event) {
     Matrix4 matrix = new Matrix4.identity();
 
     if (index == _currPageValue.floor()) {
@@ -200,19 +212,26 @@ class _HomePageBodyState extends State<HomePageBody> {
       transform: matrix,
       child: Stack(
         children: [
-          Container(
-            height: Dimensions.pageViewContainer,
-            margin: EdgeInsets.only(
-                left: Dimensions.width10, right: Dimensions.width10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(Dimensions.radius30),
-              color: index.isEven
-                  ? const Color(0xFF69c5df)
-                  : const Color(0xFF9294cc),
-              // image: const DecorationImage(
-              //   fit: BoxFit.cover,
-              //   image: AssetImage("assets/image/food0.png"),
-              // ),
+          GestureDetector(
+            onTap: () {
+              // Get.toNamed(RouteHelper.getPopularFood(index));
+            },
+            child: Container(
+              height: Dimensions.pageViewContainer,
+              margin: EdgeInsets.only(
+                  left: Dimensions.width10, right: Dimensions.width10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Dimensions.radius30),
+                color: index.isEven
+                    ? AppColors.mainColor
+                    : AppColors.secondaryColor,
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
+                    event.imageuri!,
+                  ),
+                ),
+              ),
             ),
           ),
           Align(
@@ -246,52 +265,8 @@ class _HomePageBodyState extends State<HomePageBody> {
               child: Container(
                 padding: EdgeInsets.only(
                     top: Dimensions.height15, left: 15, right: 15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    BigText(text: "Chinese Side"),
-                    SizedBox(height: Dimensions.height10),
-                    Row(
-                      children: [
-                        Wrap(
-                          children: List.generate(
-                              5,
-                              (index) => const Icon(Icons.star,
-                                  color: AppColors.mainColor, size: 15)),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        SmallText(text: "4.5"),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        SmallText(text: "1287"),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        SmallText(text: "comments"),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        IconAndTextWidget(
-                            icon: Icons.circle_sharp,
-                            text: "Normal",
-                            iconColor: AppColors.secondaryColor),
-                        IconAndTextWidget(
-                            icon: Icons.location_on,
-                            text: "1.7km",
-                            iconColor: AppColors.mainColor),
-                        IconAndTextWidget(
-                            icon: Icons.access_time_rounded,
-                            text: "32min",
-                            iconColor: AppColors.textColor),
-                      ],
-                    ),
-                  ],
+                child: AppColumn(
+                  text: event.title!,
                 ),
               ),
             ),
