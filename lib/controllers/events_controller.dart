@@ -24,12 +24,15 @@ class EventsController extends GetxController {
 
   Future<void> getEvents() async {
     Response response = await eventsRepo.getEvents();
+    print("controller called");
+    print(response.statusCode);
 
     if (response.statusCode == 200) {
       _eventsList = [];
       _eventsList.addAll(Events.fromJson(response.body).events);
       _isLoaded = true;
       update();
+      print(_eventsList.toString());
     } else {}
   }
 }

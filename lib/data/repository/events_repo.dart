@@ -11,6 +11,7 @@ class EventsRepo extends GetxService {
   });
 
   Future<Response> getEvents() async {
+    print("repo called");
     return await apiClient.get(AppConstants.EVENTS_URI);
   }
 }
