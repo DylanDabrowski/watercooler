@@ -46,45 +46,34 @@ class _HomePageBodyState extends State<HomePageBody> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        GetBuilder<EventsController>(builder: (events) {
-          return events.isLoaded
-              ? Container(
-                  // color: Colors.red,
-                  height: Dimensions.pageView,
-                  child: PageView.builder(
-                      controller: pageController,
-                      itemCount: 5,
-                      itemBuilder: (context, position) {
-                        return _buildPageItem(
-                            position, events.eventsList[position]);
-                      }),
-                )
-              : const CircularProgressIndicator(
-                  color: AppColors.mainColor,
-                );
-        }),
-        GetBuilder<EventsController>(builder: (events) {
-          return DotsIndicator(
-            dotsCount: events.eventsList.isEmpty ? 1 : 5,
-            position: _currPageValue,
-            decorator: DotsDecorator(
-                size: const Size.square(9.0),
-                activeSize: const Size(18.0, 9.0),
-                activeShape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0)),
-                activeColor: AppColors.mainColor),
-          );
-        }),
-        SizedBox(
-          height: Dimensions.height30,
+        Container(
+          // color: Colors.red,
+          height: Dimensions.pageView,
+          child: PageView.builder(
+              controller: pageController,
+              itemCount: 5,
+              itemBuilder: (context, position) {
+                return _buildPageItem(position);
+              }),
         ),
+        DotsIndicator(
+          dotsCount: 5,
+          position: _currPageValue,
+          decorator: DotsDecorator(
+              size: const Size.square(9.0),
+              activeSize: const Size(18.0, 9.0),
+              activeShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0)),
+              activeColor: AppColors.mainColor),
+        ),
+        SizedBox(height: Dimensions.height30),
         Container(
           margin: EdgeInsets.only(
               left: Dimensions.width30, bottom: Dimensions.height20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              BigText(text: "Recommended"),
+              BigText(text: "All Events"),
               SizedBox(
                 width: Dimensions.width10,
               ),
@@ -100,7 +89,7 @@ class _HomePageBodyState extends State<HomePageBody> {
               ),
               Container(
                 margin: const EdgeInsets.only(bottom: 3),
-                child: SmallText(text: "Food pairing"),
+                child: SmallText(text: "All upcoming events"),
               ),
             ],
           ),
@@ -183,7 +172,7 @@ class _HomePageBodyState extends State<HomePageBody> {
     );
   }
 
-  Widget _buildPageItem(int index, Event event) {
+  Widget _buildPageItem(int index) {
     Matrix4 matrix = new Matrix4.identity();
 
     if (index == _currPageValue.floor()) {
@@ -225,12 +214,12 @@ class _HomePageBodyState extends State<HomePageBody> {
                 color: index.isEven
                     ? AppColors.mainColor
                     : AppColors.secondaryColor,
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage(
-                    event.imageuri!,
-                  ),
-                ),
+                // image: DecorationImage(
+                //   fit: BoxFit.cover,
+                //   image: NetworkImage(
+                //     event.imageuri!,
+                //   ),
+                // ),
               ),
             ),
           ),
@@ -265,9 +254,9 @@ class _HomePageBodyState extends State<HomePageBody> {
               child: Container(
                 padding: EdgeInsets.only(
                     top: Dimensions.height15, left: 15, right: 15),
-                child: AppColumn(
-                  text: event.title!,
-                ),
+                // child: AppColumn(
+                //   text: event.title!,
+                // ),
               ),
             ),
           ),
