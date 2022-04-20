@@ -6,8 +6,11 @@ import '../utils/dimensions.dart';
 
 class ExpandableTextWidget extends StatefulWidget {
   final String text;
+  final int characterLimit;
 
-  const ExpandableTextWidget({Key? key, required this.text}) : super(key: key);
+  const ExpandableTextWidget(
+      {Key? key, required this.text, required this.characterLimit})
+      : super(key: key);
 
   @override
   _ExpandableTextWidgetState createState() => _ExpandableTextWidgetState();
@@ -19,16 +22,14 @@ class _ExpandableTextWidgetState extends State<ExpandableTextWidget> {
 
   bool hiddenText = true;
 
-  double textHeight = 60;
-
   @override
   void initState() {
     super.initState();
 
-    if (widget.text.length > textHeight) {
-      firstHalf = widget.text.substring(0, textHeight.toInt());
-      secondHalf =
-          widget.text.substring(textHeight.toInt() + 1, widget.text.length);
+    if (widget.text.length > widget.characterLimit) {
+      firstHalf = widget.text.substring(0, widget.characterLimit.toInt());
+      secondHalf = widget.text
+          .substring(widget.characterLimit.toInt() + 1, widget.text.length);
     } else {
       firstHalf = widget.text;
       secondHalf = "";
@@ -40,14 +41,12 @@ class _ExpandableTextWidgetState extends State<ExpandableTextWidget> {
     return Container(
       child: secondHalf.isEmpty
           ? SmallText(
-              size: 12,
               color: AppColors.textColor,
               text: firstHalf,
             )
           : Column(
               children: [
                 SmallText(
-                  size: 12,
                   color: AppColors.textColor,
                   text: hiddenText
                       ? (firstHalf + "...")

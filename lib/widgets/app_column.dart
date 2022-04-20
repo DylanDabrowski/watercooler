@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:watercooler/widgets/expandable_text_widget.dart';
 import 'package:watercooler/widgets/small_text.dart';
 
 import '../utils/colors.dart';
@@ -7,9 +8,11 @@ import 'big_text.dart';
 import 'icon_and_text_widget.dart';
 
 class AppColumn extends StatelessWidget {
-  final String text;
+  final String title;
+  final String description;
 
-  const AppColumn({Key? key, required this.text}) : super(key: key);
+  const AppColumn({Key? key, required this.title, required this.description})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,33 +20,14 @@ class AppColumn extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         BigText(
-          text: text,
+          text: title,
           size: Dimensions.font26,
         ),
-        SizedBox(height: Dimensions.height10),
-        Row(
-          children: [
-            Wrap(
-              children: List.generate(
-                  5,
-                  (index) => const Icon(Icons.star,
-                      color: AppColors.mainColor, size: 15)),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            SmallText(text: "4.5"),
-            const SizedBox(
-              width: 10,
-            ),
-            SmallText(text: "1287"),
-            const SizedBox(
-              width: 10,
-            ),
-            SmallText(text: "comments"),
-          ],
-        ),
-        SizedBox(height: Dimensions.height20),
+        SizedBox(height: 5),
+        Container(
+            height: 35,
+            child: ExpandableTextWidget(text: description, characterLimit: 70)),
+        SizedBox(height: 2),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: const [

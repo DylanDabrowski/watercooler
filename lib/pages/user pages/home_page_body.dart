@@ -5,6 +5,7 @@ import '../../models/event_model.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/colors.dart';
 import '../../utils/dimensions.dart';
+import '../../widgets/app_column.dart';
 import '../../widgets/big_text.dart';
 import '../../widgets/icon_and_text_widget.dart';
 import '../../widgets/small_text.dart';
@@ -60,16 +61,30 @@ class _HomePageBodyState extends State<HomePageBody> {
         Container(
           // color: Colors.red,
           height: Dimensions.pageView,
-          child: PageView.builder(
-              controller: pageController,
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                // final event = events[index];
-                return _buildPageItem(index);
-              }),
+          child: FutureBuilder<List<Event>>(
+            future: eventsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('${snapshot.error}');
+              } else if (snapshot.hasData) {
+                final events = snapshot.data!;
+                return PageView.builder(
+                  controller: pageController,
+                  itemCount: 3,
+                  itemBuilder: (context, index) {
+                    return _buildPageItem(index, events[index]);
+                  },
+                );
+              } else {
+                return const Text("No data");
+              }
+            },
+          ),
         ),
         DotsIndicator(
-          dotsCount: 5,
+          dotsCount: 3,
           position: _currPageValue,
           decorator: DotsDecorator(
               size: const Size.square(9.0),
@@ -199,7 +214,7 @@ class _HomePageBodyState extends State<HomePageBody> {
         );
       });
 
-  Widget _buildPageItem(int index) {
+  Widget _buildPageItem(int index, Event event) {
     Matrix4 matrix = new Matrix4.identity();
 
     if (index == _currPageValue.floor()) {
@@ -241,12 +256,12 @@ class _HomePageBodyState extends State<HomePageBody> {
                 color: index.isEven
                     ? AppColors.mainColor
                     : AppColors.secondaryColor,
-                // image: DecorationImage(
-                //   fit: BoxFit.cover,
-                //   image: NetworkImage(
-                //     event.imageUri,
-                //   ),
-                // ),
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
+                    event.imageUri,
+                  ),
+                ),
               ),
             ),
           ),
@@ -281,9 +296,10 @@ class _HomePageBodyState extends State<HomePageBody> {
               child: Container(
                 padding: EdgeInsets.only(
                     top: Dimensions.height15, left: 15, right: 15),
-                // child: AppColumn(
-                //   text: event.title,
-                // ),
+                child: AppColumn(
+                  title: event.title,
+                  description: event.description,
+                ),
               ),
             ),
           ),
