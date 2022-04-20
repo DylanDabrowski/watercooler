@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:watercooler/controllers/events_controller.dart';
@@ -5,7 +7,17 @@ import 'package:watercooler/pages/login%20pages/welcome_page.dart';
 import 'package:watercooler/routes/route_helper.dart';
 import 'helper/dependencies.dart' as dep;
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 void main() async {
+  HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   await dep.init();
   runApp(const MyApp());

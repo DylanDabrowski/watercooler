@@ -1,17 +1,14 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:dots_indicator/dots_indicator.dart';
-import 'package:watercooler/controllers/events_controller.dart';
-import 'package:watercooler/widgets/expandable_text_widget.dart';
 import '../../models/event_model.dart';
-import '../../routes/route_helper.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/colors.dart';
 import '../../utils/dimensions.dart';
-import '../../widgets/app_column.dart';
 import '../../widgets/big_text.dart';
 import '../../widgets/icon_and_text_widget.dart';
 import '../../widgets/small_text.dart';
+import 'package:http/http.dart' as http;
 
 class HomePageBody extends StatefulWidget {
   const HomePageBody({Key? key}) : super(key: key);
@@ -21,6 +18,20 @@ class HomePageBody extends StatefulWidget {
 }
 
 class _HomePageBodyState extends State<HomePageBody> {
+  Future<List<Event>> eventsFuture = getEvents();
+
+  static Future<List<Event>> getEvents() async {
+    print("getEvents called");
+    var response = await http
+        .get(Uri.parse(AppConstants.BASE_URL + AppConstants.EVENTS_URI));
+    print(response.statusCode);
+
+    final body = json.decode(response.body);
+    print(body);
+
+    return List<Event>.from(body.map((model) => Event.fromJson(model)));
+  }
+
   PageController pageController = PageController(viewportFraction: 0.85);
   var _currPageValue = 0.0;
   double _scaleFactor = 0.8;
@@ -52,8 +63,9 @@ class _HomePageBodyState extends State<HomePageBody> {
           child: PageView.builder(
               controller: pageController,
               itemCount: 5,
-              itemBuilder: (context, position) {
-                return _buildPageItem(position);
+              itemBuilder: (context, index) {
+                // final event = events[index];
+                return _buildPageItem(index);
               }),
         ),
         DotsIndicator(
@@ -94,83 +106,98 @@ class _HomePageBodyState extends State<HomePageBody> {
             ],
           ),
         ),
-        ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: 10,
-            itemBuilder: (context, index) {
-              return Container(
-                margin: EdgeInsets.only(
-                    left: Dimensions.width20,
-                    right: Dimensions.width20,
-                    bottom: Dimensions.height10),
-                child: Row(
-                  children: [
-                    // image section
-                    Container(
-                      width: Dimensions.listViewImgSize,
-                      height: Dimensions.listViewImgSize,
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(Dimensions.radius20),
-                        color: Colors.white38,
-                        // image: const DecorationImage(
-                        //   fit: BoxFit.cover,
-                        //   image: AssetImage("assets/image/food0.png"),
-                        // ),
-                      ),
-                    ),
-                    // text container
-                    Expanded(
-                      child: Container(
-                        height: Dimensions.listViewTextContSize,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(Dimensions.radius20),
-                              bottomRight:
-                                  Radius.circular(Dimensions.radius20)),
-                          color: Colors.white,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              left: Dimensions.width10,
-                              right: Dimensions.width10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              BigText(text: "Halloween Party!"),
-                              SizedBox(height: Dimensions.height10),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: const [
-                                  IconAndTextWidget(
-                                      icon: Icons.calendar_month,
-                                      text: "04/01/22",
-                                      iconColor: AppColors.secondaryColor),
-                                  IconAndTextWidget(
-                                      icon: Icons.location_on,
-                                      text: "G101",
-                                      iconColor: AppColors.mainColor),
-                                  IconAndTextWidget(
-                                      icon: Icons.access_time_rounded,
-                                      text: "1h30m",
-                                      iconColor: AppColors.textColor),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            }),
+        Container(
+          child: FutureBuilder<List<Event>>(
+            future: eventsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('${snapshot.error}');
+              } else if (snapshot.hasData) {
+                final events = snapshot.data!;
+                return buildEvents(events);
+              } else {
+                return const Text("No data");
+              }
+            },
+          ),
+        )
       ],
     );
   }
+
+  Widget buildEvents(List<Event> events) => ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: events.length,
+      itemBuilder: (context, index) {
+        final event = events[index];
+        return Container(
+          margin: EdgeInsets.only(
+              left: Dimensions.width20,
+              right: Dimensions.width20,
+              bottom: Dimensions.height10),
+          child: Row(
+            children: [
+              // image section
+              Container(
+                width: Dimensions.listViewImgSize,
+                height: Dimensions.listViewImgSize,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(Dimensions.radius20),
+                  color: Colors.white38,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(event.imageUri),
+                  ),
+                ),
+              ),
+              // text container
+              Expanded(
+                child: Container(
+                  height: Dimensions.listViewTextContSize,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(Dimensions.radius20),
+                        bottomRight: Radius.circular(Dimensions.radius20)),
+                    color: Colors.white,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: Dimensions.width10, right: Dimensions.width10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        BigText(text: event.title),
+                        SizedBox(height: Dimensions.height10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            IconAndTextWidget(
+                                icon: Icons.calendar_month,
+                                text: "04/01/22",
+                                iconColor: AppColors.secondaryColor),
+                            IconAndTextWidget(
+                                icon: Icons.location_on,
+                                text: "G101",
+                                iconColor: AppColors.mainColor),
+                            IconAndTextWidget(
+                                icon: Icons.access_time_rounded,
+                                text: "1h30m",
+                                iconColor: AppColors.textColor),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      });
 
   Widget _buildPageItem(int index) {
     Matrix4 matrix = new Matrix4.identity();
@@ -217,7 +244,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 // image: DecorationImage(
                 //   fit: BoxFit.cover,
                 //   image: NetworkImage(
-                //     event.imageuri!,
+                //     event.imageUri,
                 //   ),
                 // ),
               ),
@@ -255,7 +282,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 padding: EdgeInsets.only(
                     top: Dimensions.height15, left: 15, right: 15),
                 // child: AppColumn(
-                //   text: event.title!,
+                //   text: event.title,
                 // ),
               ),
             ),

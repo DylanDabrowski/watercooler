@@ -26,27 +26,47 @@ class Events {
   }
 }
 
+// class Event {
+//   int? id;
+//   String? title;
+//   String? description;
+//   String? imageuri;
+
+//   Event({this.id, this.title, this.description, this.imageuri});
+
+//   Event.fromJson(Map<String, dynamic> json) {
+//     id = json['id'];
+//     title = json['title'];
+//     description = json['description'];
+//     imageuri = json['imageuri'];
+//   }
+
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['id'] = this.id;
+//     data['title'] = this.title;
+//     data['description'] = this.description;
+//     data['imageuri'] = this.imageuri;
+//     return data;
+//   }
+// }
+
 class Event {
-  int? id;
-  String? title;
-  String? description;
-  String? imageuri;
+  final int id;
+  final String title;
+  final String description;
+  final String imageUri;
 
-  Event({this.id, this.title, this.description, this.imageuri});
+  const Event({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.imageUri,
+  });
 
-  Event.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['title'];
-    description = json['description'];
-    imageuri = json['imageuri'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['description'] = this.description;
-    data['imageuri'] = this.imageuri;
-    return data;
-  }
+  static Event fromJson(json) => Event(
+      id: json['id'],
+      title: json['title'],
+      description: json['description'],
+      imageUri: json['imageUri']);
 }
