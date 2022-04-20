@@ -10,8 +10,17 @@ import 'icon_and_text_widget.dart';
 class AppColumn extends StatelessWidget {
   final String title;
   final String description;
+  final String date;
+  final String location;
+  final String time;
 
-  const AppColumn({Key? key, required this.title, required this.description})
+  const AppColumn(
+      {Key? key,
+      required this.title,
+      required this.description,
+      required this.date,
+      required this.location,
+      required this.time})
       : super(key: key);
 
   @override
@@ -30,18 +39,18 @@ class AppColumn extends StatelessWidget {
         SizedBox(height: 2),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
+          children: [
             IconAndTextWidget(
-                icon: Icons.circle_sharp,
-                text: "Normal",
+                icon: Icons.calendar_month,
+                text: date,
                 iconColor: AppColors.mainColor),
             IconAndTextWidget(
                 icon: Icons.location_on,
-                text: "1.7km",
+                text: location,
                 iconColor: AppColors.secondaryColor),
             IconAndTextWidget(
                 icon: Icons.access_time_rounded,
-                text: "32min",
+                text: time,
                 iconColor: AppColors.textColor),
           ],
         ),

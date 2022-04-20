@@ -25,7 +25,7 @@ class IconAndTextWidget extends StatelessWidget {
           size: Dimensions.iconSize24,
         ),
         const SizedBox(
-          width: 5,
+          width: 2,
         ),
         SmallText(
           text: text,

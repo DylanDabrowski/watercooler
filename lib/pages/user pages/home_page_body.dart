@@ -150,8 +150,8 @@ class _HomePageBodyState extends State<HomePageBody> {
         final event = events[index];
         return Container(
           margin: EdgeInsets.only(
-              left: Dimensions.width20,
-              right: Dimensions.width20,
+              left: Dimensions.width10,
+              right: Dimensions.width10,
               bottom: Dimensions.height10),
           child: Row(
             children: [
@@ -189,18 +189,18 @@ class _HomePageBodyState extends State<HomePageBody> {
                         SizedBox(height: Dimensions.height10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
+                          children: [
                             IconAndTextWidget(
                                 icon: Icons.calendar_month,
-                                text: "04/01/22",
+                                text: event.date,
                                 iconColor: AppColors.secondaryColor),
                             IconAndTextWidget(
                                 icon: Icons.location_on,
-                                text: "G101",
+                                text: event.location,
                                 iconColor: AppColors.mainColor),
                             IconAndTextWidget(
                                 icon: Icons.access_time_rounded,
-                                text: "1h30m",
+                                text: event.time,
                                 iconColor: AppColors.textColor),
                           ],
                         ),
@@ -299,6 +299,9 @@ class _HomePageBodyState extends State<HomePageBody> {
                 child: AppColumn(
                   title: event.title,
                   description: event.description,
+                  date: event.date,
+                  location: event.location,
+                  time: event.time,
                 ),
               ),
             ),

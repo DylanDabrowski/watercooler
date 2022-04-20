@@ -56,17 +56,26 @@ class Event {
   final String title;
   final String description;
   final String imageUri;
+  final String date;
+  final String location;
+  final String time;
 
   const Event({
     required this.id,
     required this.title,
     required this.description,
     required this.imageUri,
+    required this.date,
+    required this.location,
+    required this.time,
   });
 
   static Event fromJson(json) => Event(
       id: json['id'],
       title: json['title'],
       description: json['description'],
-      imageUri: json['imageUri']);
+      imageUri: json['imageUri'],
+      date: json['date'],
+      location: json['location'],
+      time: json['time']);
 }
