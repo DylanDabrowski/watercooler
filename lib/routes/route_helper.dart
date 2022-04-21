@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:watercooler/models/user_model.dart';
 import 'package:watercooler/pages/login%20pages/login_page.dart';
 import 'package:watercooler/pages/login%20pages/signup_page.dart';
 import 'package:watercooler/pages/login%20pages/welcome_page.dart';

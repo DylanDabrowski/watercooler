@@ -1,18 +1,18 @@
-class SignUpBody {
+class User {
   String? username;
   String? password;
   String? firstName;
   String? lastName;
   int? userActivity;
 
-  SignUpBody(
+  User(
       {this.username,
       this.password,
       this.firstName,
       this.lastName,
       this.userActivity});
 
-  SignUpBody.fromJson(Map<String, dynamic> json) {
+  User.fromJson(Map<String, dynamic> json) {
     username = json['username'];
     password = json['password'];
     firstName = json['firstName'];

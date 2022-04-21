@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:watercooler/pages/user%20pages/home_page_body.dart';
 import 'package:watercooler/widgets/bottom_nav_widget.dart';
 
+import '../../models/user_model.dart';
 import '../../routes/route_helper.dart';
 import '../../utils/colors.dart';
 import '../../utils/dimensions.dart';
@@ -10,7 +11,9 @@ import '../../widgets/big_text.dart';
 import '../../widgets/small_text.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();

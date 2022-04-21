@@ -4,12 +4,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:watercooler/models/login_model.dart';
-import 'package:watercooler/models/signup_model.dart';
+import 'package:watercooler/models/user_model.dart';
 import 'package:watercooler/utils/app_constants.dart';
 import '../../routes/route_helper.dart';
 import '../../utils/colors.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:watercooler/utils/globals.dart' as globals;
 
 class SignupPage extends StatefulWidget {
   @override
@@ -18,7 +19,6 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   bool isLoading = false;
-  bool loggedIn = false;
 
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
@@ -27,7 +27,7 @@ class _SignupPageState extends State<SignupPage> {
 
   registerUser() async {
     try {
-      SignUpBody request = SignUpBody(
+      User request = User(
           username: username.text,
           password: password.text,
           firstName: firstName.text,
@@ -41,6 +41,8 @@ class _SignupPageState extends State<SignupPage> {
           },
           body: jsonEncode(request.toJson()));
       if (response.statusCode == 200) {
+        globals.isLoggedIn = true;
+        globals.user = request;
         Get.toNamed(RouteHelper.getHome());
       }
       print(response.body);
