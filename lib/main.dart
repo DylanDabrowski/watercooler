@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:watercooler/pages/login%20pages/welcome_page.dart';
 import 'package:watercooler/routes/route_helper.dart';
 
+import 'package:watercooler/utils/globals.dart' as globals;
+
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -15,6 +17,7 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 void main() async {
+  globals.isLoggedIn = false;
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }

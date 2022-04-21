@@ -12,12 +12,12 @@ import '../../utils/colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:watercooler/utils/globals.dart' as globals;
 
-class SignupPage extends StatefulWidget {
+class SignUpPage extends StatefulWidget {
   @override
-  _SignupPageState createState() => _SignupPageState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _SignUpPageState extends State<SignUpPage> {
   bool isLoading = false;
 
   TextEditingController username = TextEditingController();

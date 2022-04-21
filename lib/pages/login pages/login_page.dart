@@ -1,10 +1,58 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:watercooler/routes/route_helper.dart';
 import 'package:watercooler/utils/colors.dart';
 import 'package:get/get.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+import '../../models/user_model.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:watercooler/utils/globals.dart' as globals;
+
+import '../../utils/app_constants.dart';
+
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  bool isLoading = false;
+
+  TextEditingController username = TextEditingController();
+  TextEditingController password = TextEditingController();
+
+  loginUser() async {
+    try {
+      User request = User(
+          username: username.text,
+          password: password.text,
+          firstName: '',
+          lastName: '',
+          userActivity: 0);
+
+      var response = await http.post(
+          Uri.parse(AppConstants.BASE_URL + AppConstants.LOGIN_URI),
+          headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+          },
+          body: jsonEncode(request.toJson()));
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        globals.isLoggedIn = true;
+        globals.user = User.fromJson(jsonDecode(response.body));
+        print(globals.user);
+        Get.toNamed(RouteHelper.getHome());
+      } else {
+        final snackbar = SnackBar(content: Text("Invalid Login"));
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      }
+    } catch (e) {
+      print('ERROR: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +74,7 @@ class LoginPage extends StatelessWidget {
                   size: 40.0,
                 ),
               ),
-              const SizedBox(height: 100),
+              const SizedBox(height: 10),
               // title
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -41,30 +89,32 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               // email textfield
-              const TextField(
+              TextFormField(
+                controller: username,
                 obscureText: false,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Email',
+                  labelText: 'Username',
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               // password textfield
-              const TextField(
+              TextFormField(
+                controller: password,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Password',
                 ),
               ),
               const SizedBox(height: 40),
-              // login button
+              // sign up button
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   OutlinedButton(
                     onPressed: () {
-                      Get.toNamed(RouteHelper.getHome());
+                      loginUser();
                     },
                     style: OutlinedButton.styleFrom(
                         primary: Colors.white,

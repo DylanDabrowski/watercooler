@@ -29,7 +29,7 @@ class RouteHelper {
   static List<GetPage> routes = [
     GetPage(name: initial, page: () => WelcomePage()),
     GetPage(name: login, page: () => LoginPage()),
-    GetPage(name: signup, page: () => SignupPage()),
+    GetPage(name: signup, page: () => SignUpPage()),
     GetPage(name: home, page: () => HomePage()),
     GetPage(name: profile, page: () => ProfilePage()),
     GetPage(name: chat, page: () => ChatPage()),
