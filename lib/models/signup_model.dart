@@ -1,25 +1,32 @@
 class SignUpBody {
-  String username;
-  String password;
-  String firstName;
-  String lastName;
-  ActivityStatus userActivity;
+  String? username;
+  String? password;
+  String? firstName;
+  String? lastName;
+  int? userActivity;
 
   SignUpBody(
-      {required this.username,
-      required this.password,
-      required this.firstName,
-      required this.lastName,
-      required this.userActivity});
+      {this.username,
+      this.password,
+      this.firstName,
+      this.lastName,
+      this.userActivity});
+
+  SignUpBody.fromJson(Map<String, dynamic> json) {
+    username = json['username'];
+    password = json['password'];
+    firstName = json['firstName'];
+    lastName = json['lastName'];
+    userActivity = json['userActivity'];
+  }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['username'] = username;
-    data['password'] = password;
-    data['firstName'] = firstName;
-    data['lastName'] = lastName;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['username'] = this.username;
+    data['password'] = this.password;
+    data['firstName'] = this.firstName;
+    data['lastName'] = this.lastName;
+    data['userActivity'] = this.userActivity;
     return data;
   }
 }
-
-enum ActivityStatus { ONLINE, AWAY, DO_NOT_DISTURB, OFFLINE }

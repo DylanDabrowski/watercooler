@@ -1,10 +1,53 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:watercooler/models/login_model.dart';
+import 'package:watercooler/models/signup_model.dart';
+import 'package:watercooler/utils/app_constants.dart';
 import '../../routes/route_helper.dart';
 import '../../utils/colors.dart';
 
-class SignupPage extends StatelessWidget {
-  const SignupPage({Key? key}) : super(key: key);
+import 'package:http/http.dart' as http;
+
+class SignupPage extends StatefulWidget {
+  @override
+  _SignupPageState createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> {
+  bool isLoading = false;
+  bool loggedIn = false;
+
+  TextEditingController username = TextEditingController();
+  TextEditingController password = TextEditingController();
+  TextEditingController firstName = TextEditingController();
+  TextEditingController lastName = TextEditingController();
+
+  registerUser() async {
+    try {
+      SignUpBody request = SignUpBody(
+          username: username.text,
+          password: password.text,
+          firstName: firstName.text,
+          lastName: lastName.text,
+          userActivity: 0);
+
+      var response = await http.post(
+          Uri.parse(AppConstants.BASE_URL + AppConstants.REGISTER_URI),
+          headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+          },
+          body: jsonEncode(request.toJson()));
+      if (response.statusCode == 200) {
+        Get.toNamed(RouteHelper.getHome());
+      }
+      print(response.body);
+    } catch (e) {
+      print('ERROR: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +69,7 @@ class SignupPage extends StatelessWidget {
                   size: 40.0,
                 ),
               ),
-              const SizedBox(height: 100),
+              const SizedBox(height: 10),
               // title
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -40,19 +83,40 @@ class SignupPage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              // email textfield
-              const TextField(
+              TextFormField(
+                controller: firstName,
                 obscureText: false,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Email',
+                  labelText: 'First Name',
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
+              // last name texfield
+              TextField(
+                controller: lastName,
+                obscureText: false,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Last Name',
+                ),
+              ),
+              const SizedBox(height: 10),
+              // email textfield
+              TextFormField(
+                controller: username,
+                obscureText: false,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Username',
+                ),
+              ),
+              const SizedBox(height: 10),
               // password textfield
-              const TextField(
+              TextFormField(
+                controller: password,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Password',
                 ),
@@ -64,7 +128,7 @@ class SignupPage extends StatelessWidget {
                 children: [
                   OutlinedButton(
                     onPressed: () {
-                      Get.toNamed(RouteHelper.getHome());
+                      registerUser();
                     },
                     style: OutlinedButton.styleFrom(
                         primary: Colors.white,
