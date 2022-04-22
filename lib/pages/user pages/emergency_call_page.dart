@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:watercooler/widgets/big_text.dart';
 import 'package:watercooler/widgets/bottom_nav_widget.dart';
-
 import '../../utils/colors.dart';
+
+import 'package:watercooler/utils/globals.dart' as globals;
 
 class EmergencyCallPage extends StatefulWidget {
   const EmergencyCallPage({Key? key}) : super(key: key);
@@ -15,7 +16,16 @@ class _EmergencyCallPageState extends State<EmergencyCallPage> {
   TextEditingController message = TextEditingController();
 
   sendEmergencyMessage() {
-    print("emregency message pressed");
+    if (message.text.isNotEmpty) {
+      globals.adminMessage = message.text;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Emergency Message Sent"),
+        backgroundColor: Colors.red,
+      ));
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Error sending message")));
+    }
   }
 
   @override

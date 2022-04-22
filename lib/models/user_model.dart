@@ -1,4 +1,5 @@
 class User {
+  int? id;
   String? username;
   String? password;
   String? firstName;
@@ -8,7 +9,8 @@ class User {
   int? permissionLevel;
 
   User(
-      {this.username,
+      {this.id,
+      this.username,
       this.password,
       this.firstName,
       this.lastName,
@@ -17,6 +19,7 @@ class User {
       this.permissionLevel});
 
   User.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     username = json['username'];
     password = json['password'];
     firstName = json['firstName'];
@@ -28,6 +31,7 @@ class User {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'];
     data['username'] = this.username;
     data['password'] = this.password;
     data['firstName'] = this.firstName;

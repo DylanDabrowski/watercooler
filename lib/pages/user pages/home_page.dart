@@ -22,11 +22,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!
+        .addPostFrameCallback((_) => checkForAdminMessage());
+  }
+
   signOut() {
     globals.user = User();
     Get.toNamed(RouteHelper.getInitial());
     const snackbar = SnackBar(content: Text("Signed Out"));
     ScaffoldMessenger.of(context).showSnackBar(snackbar);
+  }
+
+  checkForAdminMessage() {
+    print(globals.adminMessage);
+    if (globals.user.permissionLevel != null &&
+        globals.user.permissionLevel! > 1) {
+      if (globals.adminMessage != null && globals.adminMessage != '') {
+        var snackbar = SnackBar(
+          content: Text("EMERGENCY MESSAGE: ${globals.adminMessage}"),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 15),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      }
+    }
   }
 
   @override
@@ -50,29 +71,32 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Row(
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            Get.toNamed(RouteHelper.getAddEvent());
-                          },
-                          child: Center(
-                            child: Container(
-                              margin: const EdgeInsets.only(right: 10),
-                              width: Dimensions.width45,
-                              height: Dimensions.height45,
-                              child: Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: Dimensions.iconSize24,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                  Dimensions.radius15,
+                        globals.user.permissionLevel != null &&
+                                globals.user.permissionLevel! > 1
+                            ? GestureDetector(
+                                onTap: () {
+                                  Get.toNamed(RouteHelper.getAddEvent());
+                                },
+                                child: Center(
+                                  child: Container(
+                                    margin: const EdgeInsets.only(right: 10),
+                                    width: Dimensions.width45,
+                                    height: Dimensions.height45,
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                      size: Dimensions.iconSize24,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                        Dimensions.radius15,
+                                      ),
+                                      color: AppColors.mainColor,
+                                    ),
+                                  ),
                                 ),
-                                color: AppColors.mainColor,
-                              ),
-                            ),
-                          ),
-                        ),
+                              )
+                            : Container(),
                         GestureDetector(
                           onTap: () {
                             signOut();

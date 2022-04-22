@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:watercooler/models/user_model.dart';
 import 'package:watercooler/widgets/big_text.dart';
 import 'package:watercooler/widgets/bottom_nav_widget.dart';
@@ -8,6 +9,7 @@ import 'package:watercooler/widgets/bottom_nav_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:watercooler/widgets/small_text.dart';
 
+import '../../routes/route_helper.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/dimensions.dart';
 
@@ -68,92 +70,97 @@ Widget buildUserList(List<User> users) => ListView.builder(
     itemCount: users.length,
     itemBuilder: (context, index) {
       final user = users[index];
-      return Container(
-        margin: EdgeInsets.only(
-            left: Dimensions.width10,
-            right: Dimensions.width10,
-            bottom: Dimensions.height10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(60),
-              topRight: Radius.circular(20),
-              bottomLeft: Radius.circular(60),
-              bottomRight: Radius.circular(20)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.35),
-              spreadRadius: 2,
-              blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            // image section
-            user.profilePictureUri != ""
-                ? Container(
-                    width: Dimensions.listViewImgSize,
-                    height: Dimensions.listViewImgSize,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(60),
-                      color: Colors.white38,
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(user.profilePictureUri!),
+      return GestureDetector(
+        onTap: () {
+          Get.toNamed(RouteHelper.getUserChat(user.id!));
+        },
+        child: Container(
+          margin: EdgeInsets.only(
+              left: Dimensions.width10,
+              right: Dimensions.width10,
+              bottom: Dimensions.height10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(60),
+                topRight: Radius.circular(20),
+                bottomLeft: Radius.circular(60),
+                bottomRight: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.35),
+                spreadRadius: 2,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              // image section
+              user.profilePictureUri != ""
+                  ? Container(
+                      width: Dimensions.listViewImgSize,
+                      height: Dimensions.listViewImgSize,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(60),
+                        color: Colors.white38,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(user.profilePictureUri!),
+                        ),
                       ),
+                    )
+                  : const Icon(
+                      Icons.person,
+                      size: 100,
                     ),
-                  )
-                : const Icon(
-                    Icons.person,
-                    size: 100,
+              // text container
+              Expanded(
+                child: Container(
+                  height: Dimensions.listViewTextContSize,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(Dimensions.radius20),
+                        bottomRight: Radius.circular(Dimensions.radius20)),
+                    color: Colors.white,
                   ),
-            // text container
-            Expanded(
-              child: Container(
-                height: Dimensions.listViewTextContSize,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(Dimensions.radius20),
-                      bottomRight: Radius.circular(Dimensions.radius20)),
-                  color: Colors.white,
-                ),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      left: Dimensions.width10,
-                      right: Dimensions.width10,
-                      top: Dimensions.height10,
-                      bottom: Dimensions.height10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BigText(
-                        text: '${user.firstName} ${user.lastName}',
-                      ),
-                      const SizedBox(height: 10),
-                      SmallText(text: user.username.toString()),
-                      user.permissionLevel! > 1
-                          ? SmallText(
-                              text: "Admin",
-                              color: Colors.red,
-                            )
-                          : Container(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: const [
-                          Icon(
-                            Icons.arrow_circle_right_outlined,
-                            size: 20,
-                          ),
-                        ],
-                      ),
-                    ],
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: Dimensions.width10,
+                        right: Dimensions.width10,
+                        top: Dimensions.height10,
+                        bottom: Dimensions.height10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        BigText(
+                          text: '${user.firstName} ${user.lastName}',
+                        ),
+                        const SizedBox(height: 10),
+                        SmallText(text: user.username.toString()),
+                        user.permissionLevel! > 1
+                            ? SmallText(
+                                text: "Admin",
+                                color: Colors.red,
+                              )
+                            : Container(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: const [
+                            Icon(
+                              Icons.arrow_circle_right_outlined,
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     });

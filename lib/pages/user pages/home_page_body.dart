@@ -12,6 +12,7 @@ import '../../widgets/big_text.dart';
 import '../../widgets/icon_and_text_widget.dart';
 import '../../widgets/small_text.dart';
 import 'package:http/http.dart' as http;
+import "package:watercooler/utils/globals.dart" as globals;
 
 class HomePageBody extends StatefulWidget {
   const HomePageBody({Key? key}) : super(key: key);
@@ -229,13 +230,16 @@ class _HomePageBodyState extends State<HomePageBody> {
                                 : BigText(
                                     text: "No Title",
                                     color: AppColors.secondaryColor),
-                            GestureDetector(
-                              onTap: () {
-                                deleteEvent(event.id!);
-                              },
-                              child:
-                                  const Icon(Icons.delete, color: Colors.red),
-                            ),
+                            globals.user.permissionLevel != null &&
+                                    globals.user.permissionLevel! > 1
+                                ? GestureDetector(
+                                    onTap: () {
+                                      deleteEvent(event.id!);
+                                    },
+                                    child: const Icon(Icons.delete,
+                                        color: Colors.red),
+                                  )
+                                : Container(),
                           ],
                         ),
                         SizedBox(height: Dimensions.height10),
@@ -338,12 +342,15 @@ class _HomePageBodyState extends State<HomePageBody> {
                     ),
                   ),
           ),
-          GestureDetector(
-            onTap: () {
-              deleteEvent(event.id!);
-            },
-            child: const Icon(Icons.delete, color: Colors.red),
-          ),
+          globals.user.permissionLevel != null &&
+                  globals.user.permissionLevel! > 1
+              ? GestureDetector(
+                  onTap: () {
+                    deleteEvent(event.id!);
+                  },
+                  child: const Icon(Icons.delete, color: Colors.red),
+                )
+              : Container(),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
