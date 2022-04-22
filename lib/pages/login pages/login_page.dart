@@ -31,7 +31,9 @@ class _LoginPageState extends State<LoginPage> {
           password: password.text,
           firstName: '',
           lastName: '',
-          userActivity: 0);
+          userActivity: 0,
+          profilePictureUri: "",
+          permissionLevel: 1);
 
       var response = await http.post(
           Uri.parse(AppConstants.BASE_URL + AppConstants.LOGIN_URI),
@@ -46,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
         print(globals.user);
         Get.toNamed(RouteHelper.getHome());
       } else {
-        final snackbar = SnackBar(content: Text("Invalid Login"));
+        const snackbar = SnackBar(content: Text("Invalid Login"));
         ScaffoldMessenger.of(context).showSnackBar(snackbar);
       }
     } catch (e) {
@@ -93,7 +95,8 @@ class _LoginPageState extends State<LoginPage> {
                 controller: username,
                 obscureText: false,
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
                   labelText: 'Username',
                 ),
               ),
@@ -103,7 +106,8 @@ class _LoginPageState extends State<LoginPage> {
                 controller: password,
                 obscureText: true,
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
                   labelText: 'Password',
                 ),
               ),

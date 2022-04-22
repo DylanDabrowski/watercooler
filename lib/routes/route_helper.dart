@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:watercooler/models/user_model.dart';
+import 'package:watercooler/pages/admin%20pages/add_event_page.dart';
 import 'package:watercooler/pages/login%20pages/login_page.dart';
 import 'package:watercooler/pages/login%20pages/signup_page.dart';
 import 'package:watercooler/pages/login%20pages/welcome_page.dart';
@@ -17,6 +18,7 @@ class RouteHelper {
   static const String profile = "/profile";
   static const String chat = "/chat";
   static const String emergency = "/emergency";
+  static const String addEvent = "/addEvent";
 
   static String getInitial() => '$initial';
   static String getLogin() => '$login';
@@ -25,6 +27,7 @@ class RouteHelper {
   static String getProfile() => '$profile';
   static String getChat() => '$chat';
   static String getEmergency() => '$emergency';
+  static String getAddEvent() => '$addEvent';
 
   static List<GetPage> routes = [
     GetPage(name: initial, page: () => WelcomePage()),
@@ -34,5 +37,6 @@ class RouteHelper {
     GetPage(name: profile, page: () => ProfilePage()),
     GetPage(name: chat, page: () => ChatPage()),
     GetPage(name: emergency, page: () => EmergencyCallPage()),
+    GetPage(name: addEvent, page: () => AddEventPage()),
   ];
 }

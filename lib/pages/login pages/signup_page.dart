@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:watercooler/models/login_model.dart';
 import 'package:watercooler/models/user_model.dart';
 import 'package:watercooler/utils/app_constants.dart';
 import '../../routes/route_helper.dart';
@@ -28,11 +27,14 @@ class _SignUpPageState extends State<SignUpPage> {
   registerUser() async {
     try {
       User request = User(
-          username: username.text,
-          password: password.text,
-          firstName: firstName.text,
-          lastName: lastName.text,
-          userActivity: 0);
+        username: username.text,
+        password: password.text,
+        firstName: firstName.text,
+        lastName: lastName.text,
+        userActivity: 0,
+        profilePictureUri: "",
+        permissionLevel: 1,
+      );
 
       var response = await http.post(
           Uri.parse(AppConstants.BASE_URL + AppConstants.REGISTER_URI),
@@ -89,7 +91,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: firstName,
                 obscureText: false,
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
                   labelText: 'First Name',
                 ),
               ),
@@ -99,7 +102,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: lastName,
                 obscureText: false,
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
                   labelText: 'Last Name',
                 ),
               ),
@@ -109,7 +113,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: username,
                 obscureText: false,
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
                   labelText: 'Username',
                 ),
               ),
@@ -119,7 +124,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: password,
                 obscureText: true,
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
                   labelText: 'Password',
                 ),
               ),

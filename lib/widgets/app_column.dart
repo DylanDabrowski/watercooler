@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:watercooler/utils/app_constants.dart';
 import 'package:watercooler/widgets/expandable_text_widget.dart';
 import 'package:watercooler/widgets/small_text.dart';
 
@@ -9,6 +10,7 @@ import 'icon_and_text_widget.dart';
 
 class AppColumn extends StatelessWidget {
   final String title;
+  final Color titleColor;
   final String description;
   final String date;
   final String location;
@@ -17,6 +19,7 @@ class AppColumn extends StatelessWidget {
   const AppColumn(
       {Key? key,
       required this.title,
+      this.titleColor = AppColors.textColor,
       required this.description,
       required this.date,
       required this.location,
@@ -31,11 +34,12 @@ class AppColumn extends StatelessWidget {
         BigText(
           text: title,
           size: Dimensions.font26,
+          color: titleColor,
         ),
         SizedBox(height: 5),
         Container(
             height: 35,
-            child: ExpandableTextWidget(text: description, characterLimit: 70)),
+            child: ExpandableTextWidget(text: description, characterLimit: 30)),
         SizedBox(height: 2),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

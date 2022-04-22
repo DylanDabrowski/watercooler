@@ -10,6 +10,8 @@ import '../../utils/dimensions.dart';
 import '../../widgets/big_text.dart';
 import '../../widgets/small_text.dart';
 
+import 'package:watercooler/utils/globals.dart' as globals;
+
 class HomePage extends StatefulWidget {
   const HomePage({
     Key? key,
@@ -20,6 +22,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  signOut() {
+    globals.user = User();
+    Get.toNamed(RouteHelper.getInitial());
+    const snackbar = SnackBar(content: Text("Signed Out"));
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,23 +48,55 @@ class _HomePageState extends State<HomePage> {
                       size: 35.0,
                       color: AppColors.mainColor,
                     ),
-                    Center(
-                      child: Container(
-                        width: Dimensions.width45,
-                        height: Dimensions.height45,
-                        child: Icon(
-                          Icons.search,
-                          color: Colors.white,
-                          size: Dimensions.iconSize24,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius15,
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Get.toNamed(RouteHelper.getAddEvent());
+                          },
+                          child: Center(
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 10),
+                              width: Dimensions.width45,
+                              height: Dimensions.height45,
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.white,
+                                size: Dimensions.iconSize24,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  Dimensions.radius15,
+                                ),
+                                color: AppColors.mainColor,
+                              ),
+                            ),
                           ),
-                          color: AppColors.mainColor,
                         ),
-                      ),
-                    )
+                        GestureDetector(
+                          onTap: () {
+                            signOut();
+                          },
+                          child: Center(
+                            child: Container(
+                              width: Dimensions.width45,
+                              height: Dimensions.height45,
+                              child: Icon(
+                                Icons.exit_to_app,
+                                color: Colors.white,
+                                size: Dimensions.iconSize24,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  Dimensions.radius15,
+                                ),
+                                color: AppColors.mainColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -67,6 +108,6 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        bottomNavigationBar: BottomNav());
+        bottomNavigationBar: const BottomNav());
   }
 }

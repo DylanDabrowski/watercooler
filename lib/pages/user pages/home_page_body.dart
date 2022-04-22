@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:get/get.dart';
 import '../../models/event_model.dart';
+import '../../routes/route_helper.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/colors.dart';
 import '../../utils/dimensions.dart';
@@ -31,6 +33,25 @@ class _HomePageBodyState extends State<HomePageBody> {
     print(body);
 
     return List<Event>.from(body.map((model) => Event.fromJson(model)));
+  }
+
+  deleteEvent(int index) async {
+    var response = await http.delete(
+        Uri.parse(AppConstants.BASE_URL + AppConstants.EVENTS_URI + '$index'));
+    try {
+      if (response.statusCode == 200) {
+        setState(() {
+          eventsFuture = getEvents();
+        });
+        const snackbar = SnackBar(content: Text("Event Deleted"));
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      } else {
+        const snackbar = SnackBar(content: Text("Error deleting event"));
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      }
+    } catch (e) {
+      print('ERROR DELETING EVENT: $e');
+    }
   }
 
   PageController pageController = PageController(viewportFraction: 0.85);
@@ -156,18 +177,33 @@ class _HomePageBodyState extends State<HomePageBody> {
           child: Row(
             children: [
               // image section
-              Container(
-                width: Dimensions.listViewImgSize,
-                height: Dimensions.listViewImgSize,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(Dimensions.radius20),
-                  color: Colors.white38,
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(event.imageUri),
-                  ),
-                ),
-              ),
+              event.imageUri != null && event.imageUri != ''
+                  ? Container(
+                      width: Dimensions.listViewImgSize,
+                      height: Dimensions.listViewImgSize,
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(Dimensions.radius20),
+                        color: Colors.white38,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(event.imageUri!),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      width: Dimensions.listViewImgSize,
+                      height: Dimensions.listViewImgSize,
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(Dimensions.radius20),
+                        color: Colors.white38,
+                        image: const DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage("assets/images/no-image.png"),
+                        ),
+                      ),
+                    ),
               // text container
               Expanded(
                 child: Container(
@@ -185,22 +221,45 @@ class _HomePageBodyState extends State<HomePageBody> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        BigText(text: event.title),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            event.title != null && event.title != ''
+                                ? BigText(text: event.title!)
+                                : BigText(
+                                    text: "No Title",
+                                    color: AppColors.secondaryColor),
+                            GestureDetector(
+                              onTap: () {
+                                deleteEvent(event.id!);
+                              },
+                              child:
+                                  const Icon(Icons.delete, color: Colors.red),
+                            ),
+                          ],
+                        ),
                         SizedBox(height: Dimensions.height10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             IconAndTextWidget(
                                 icon: Icons.calendar_month,
-                                text: event.date,
+                                text: event.date != null && event.date != ''
+                                    ? event.date!
+                                    : "N/A",
                                 iconColor: AppColors.secondaryColor),
                             IconAndTextWidget(
                                 icon: Icons.location_on,
-                                text: event.location,
+                                text: event.location != null &&
+                                        event.location != ''
+                                    ? event.location!
+                                    : "N/A",
                                 iconColor: AppColors.mainColor),
                             IconAndTextWidget(
                                 icon: Icons.access_time_rounded,
-                                text: event.time,
+                                text: event.time != null && event.time != ''
+                                    ? event.time!
+                                    : "N/A",
                                 iconColor: AppColors.textColor),
                           ],
                         ),
@@ -247,23 +306,43 @@ class _HomePageBodyState extends State<HomePageBody> {
             onTap: () {
               // Get.toNamed(RouteHelper.getPopularFood(index));
             },
-            child: Container(
-              height: Dimensions.pageViewContainer,
-              margin: EdgeInsets.only(
-                  left: Dimensions.width10, right: Dimensions.width10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Dimensions.radius30),
-                color: index.isEven
-                    ? AppColors.mainColor
-                    : AppColors.secondaryColor,
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage(
-                    event.imageUri,
+            child: event.imageUri != null && event.imageUri != ''
+                ? Container(
+                    height: Dimensions.pageViewContainer,
+                    margin: EdgeInsets.only(
+                        left: Dimensions.width10, right: Dimensions.width10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(Dimensions.radius30),
+                      color: index.isEven
+                          ? AppColors.mainColor
+                          : AppColors.secondaryColor,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(event.imageUri!),
+                      ),
+                    ),
+                  )
+                : Container(
+                    height: Dimensions.pageViewContainer,
+                    margin: EdgeInsets.only(
+                        left: Dimensions.width10, right: Dimensions.width10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(Dimensions.radius30),
+                      color: index.isEven
+                          ? AppColors.mainColor
+                          : AppColors.secondaryColor,
+                      image: const DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage("assets/images/no-image.png"),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              deleteEvent(event.id!);
+            },
+            child: const Icon(Icons.delete, color: Colors.red),
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -296,12 +375,28 @@ class _HomePageBodyState extends State<HomePageBody> {
               child: Container(
                 padding: EdgeInsets.only(
                     top: Dimensions.height15, left: 15, right: 15),
-                child: AppColumn(
-                  title: event.title,
-                  description: event.description,
-                  date: event.date,
-                  location: event.location,
-                  time: event.time,
+                child: Row(
+                  children: [
+                    AppColumn(
+                      title: event.title != null && event.title != ''
+                          ? event.title!
+                          : 'No Title'.toString(),
+                      titleColor: event.title != null && event.title != ''
+                          ? AppColors.textColor
+                          : AppColors.secondaryColor,
+                      description:
+                          event.description != null ? event.description! : '',
+                      date: event.date != null && event.date != ''
+                          ? event.date!
+                          : 'N/A',
+                      location: event.location != null && event.location != ''
+                          ? event.location!
+                          : 'N/A',
+                      time: event.time != null && event.time != null
+                          ? event.time!
+                          : 'N/A',
+                    ),
+                  ],
                 ),
               ),
             ),

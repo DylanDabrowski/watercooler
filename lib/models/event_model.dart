@@ -52,30 +52,42 @@ class Events {
 // }
 
 class Event {
-  final int id;
-  final String title;
-  final String description;
-  final String imageUri;
-  final String date;
-  final String location;
-  final String time;
+  int? id;
+  String? title;
+  String? description;
+  String? imageUri;
+  String? date;
+  String? location;
+  String? time;
 
-  const Event({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.imageUri,
-    required this.date,
-    required this.location,
-    required this.time,
-  });
+  Event(
+      {this.id,
+      this.title,
+      this.description,
+      this.imageUri,
+      this.date,
+      this.location,
+      this.time});
 
-  static Event fromJson(json) => Event(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      imageUri: json['imageUri'],
-      date: json['date'],
-      location: json['location'],
-      time: json['time']);
+  Event.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    description = json['description'];
+    imageUri = json['imageUri'];
+    date = json['date'];
+    location = json['location'];
+    time = json['time'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = id;
+    data['title'] = title;
+    data['description'] = description;
+    data['imageUri'] = imageUri;
+    data['date'] = date;
+    data['location'] = location;
+    data['time'] = time;
+    return data;
+  }
 }
