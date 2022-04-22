@@ -1,11 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:watercooler/widgets/big_text.dart';
 
+import '../../models/user_model.dart';
 import '../../routes/route_helper.dart';
+import '../../utils/app_constants.dart';
 import '../../utils/colors.dart';
 import '../../utils/dimensions.dart';
 import '../../widgets/bottom_nav_widget.dart';
+
+import 'package:http/http.dart' as http;
 
 class UserChatPage extends StatefulWidget {
   final int pageId;
@@ -20,8 +26,23 @@ class _UserChatPageState extends State<UserChatPage> {
   TextEditingController message = TextEditingController();
   List<String> messages = List.empty(growable: true);
 
+  Future<User> getUsers() async {
+    try {
+      var response = await http.get(Uri.parse(AppConstants.BASE_URL +
+          AppConstants.GET_USERS_URI +
+          '${widget.pageId}'));
+
+      final body = json.decode(response.body);
+      return User.fromJson(body);
+    } on Exception catch (e) {
+      print("ERROR: $e");
+    }
+    return User();
+  }
+
   @override
   Widget build(BuildContext context) {
+    Future<User> user = getUsers();
     return Scaffold(
         body: SafeArea(
           child: Column(
@@ -42,6 +63,7 @@ class _UserChatPageState extends State<UserChatPage> {
                       ),
                     ),
                   ),
+                  getUsers() != null ? BigText(text: '') : Container(),
                 ],
               ),
               const Spacer(),

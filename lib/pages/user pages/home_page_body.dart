@@ -170,109 +170,114 @@ class _HomePageBodyState extends State<HomePageBody> {
       itemCount: events.length,
       itemBuilder: (context, index) {
         final event = events[index];
-        return Container(
-          margin: EdgeInsets.only(
-              left: Dimensions.width10,
-              right: Dimensions.width10,
-              bottom: Dimensions.height10),
-          child: Row(
-            children: [
-              // image section
-              event.imageUri != null && event.imageUri != ''
-                  ? Container(
-                      width: Dimensions.listViewImgSize,
-                      height: Dimensions.listViewImgSize,
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(Dimensions.radius20),
-                        color: Colors.white38,
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(event.imageUri!),
+        return GestureDetector(
+          onTap: () {
+            Get.toNamed(RouteHelper.getEventDetails(index));
+          },
+          child: Container(
+            margin: EdgeInsets.only(
+                left: Dimensions.width10,
+                right: Dimensions.width10,
+                bottom: Dimensions.height10),
+            child: Row(
+              children: [
+                // image section
+                event.imageUri != null && event.imageUri != ''
+                    ? Container(
+                        width: Dimensions.listViewImgSize,
+                        height: Dimensions.listViewImgSize,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(Dimensions.radius20),
+                          color: Colors.white38,
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(event.imageUri!),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        width: Dimensions.listViewImgSize,
+                        height: Dimensions.listViewImgSize,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(Dimensions.radius20),
+                          color: Colors.white38,
+                          image: const DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage("assets/images/no-image.png"),
+                          ),
                         ),
                       ),
-                    )
-                  : Container(
-                      width: Dimensions.listViewImgSize,
-                      height: Dimensions.listViewImgSize,
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(Dimensions.radius20),
-                        color: Colors.white38,
-                        image: const DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage("assets/images/no-image.png"),
-                        ),
+                // text container
+                Expanded(
+                  child: Container(
+                    height: Dimensions.listViewTextContSize,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(Dimensions.radius20),
+                          bottomRight: Radius.circular(Dimensions.radius20)),
+                      color: Colors.white,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          left: Dimensions.width10, right: Dimensions.width10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              event.title != null && event.title != ''
+                                  ? BigText(text: event.title!)
+                                  : BigText(
+                                      text: "No Title",
+                                      color: AppColors.secondaryColor),
+                              globals.user.permissionLevel != null &&
+                                      globals.user.permissionLevel! > 1
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        deleteEvent(event.id!);
+                                      },
+                                      child: const Icon(Icons.delete,
+                                          color: Colors.red),
+                                    )
+                                  : Container(),
+                            ],
+                          ),
+                          SizedBox(height: Dimensions.height10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconAndTextWidget(
+                                  icon: Icons.calendar_month,
+                                  text: event.date != null && event.date != ''
+                                      ? event.date!
+                                      : "N/A",
+                                  iconColor: AppColors.secondaryColor),
+                              IconAndTextWidget(
+                                  icon: Icons.location_on,
+                                  text: event.location != null &&
+                                          event.location != ''
+                                      ? event.location!
+                                      : "N/A",
+                                  iconColor: AppColors.mainColor),
+                              IconAndTextWidget(
+                                  icon: Icons.access_time_rounded,
+                                  text: event.time != null && event.time != ''
+                                      ? event.time!
+                                      : "N/A",
+                                  iconColor: AppColors.textColor),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-              // text container
-              Expanded(
-                child: Container(
-                  height: Dimensions.listViewTextContSize,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(Dimensions.radius20),
-                        bottomRight: Radius.circular(Dimensions.radius20)),
-                    color: Colors.white,
                   ),
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        left: Dimensions.width10, right: Dimensions.width10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            event.title != null && event.title != ''
-                                ? BigText(text: event.title!)
-                                : BigText(
-                                    text: "No Title",
-                                    color: AppColors.secondaryColor),
-                            globals.user.permissionLevel != null &&
-                                    globals.user.permissionLevel! > 1
-                                ? GestureDetector(
-                                    onTap: () {
-                                      deleteEvent(event.id!);
-                                    },
-                                    child: const Icon(Icons.delete,
-                                        color: Colors.red),
-                                  )
-                                : Container(),
-                          ],
-                        ),
-                        SizedBox(height: Dimensions.height10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconAndTextWidget(
-                                icon: Icons.calendar_month,
-                                text: event.date != null && event.date != ''
-                                    ? event.date!
-                                    : "N/A",
-                                iconColor: AppColors.secondaryColor),
-                            IconAndTextWidget(
-                                icon: Icons.location_on,
-                                text: event.location != null &&
-                                        event.location != ''
-                                    ? event.location!
-                                    : "N/A",
-                                iconColor: AppColors.mainColor),
-                            IconAndTextWidget(
-                                icon: Icons.access_time_rounded,
-                                text: event.time != null && event.time != ''
-                                    ? event.time!
-                                    : "N/A",
-                                iconColor: AppColors.textColor),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         );
       });
@@ -308,7 +313,7 @@ class _HomePageBodyState extends State<HomePageBody> {
         children: [
           GestureDetector(
             onTap: () {
-              // Get.toNamed(RouteHelper.getPopularFood(index));
+              Get.toNamed(RouteHelper.getEventDetails(index));
             },
             child: event.imageUri != null && event.imageUri != ''
                 ? Container(

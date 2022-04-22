@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:watercooler/models/user_model.dart';
 import 'package:watercooler/utils/colors.dart';
 import 'package:watercooler/widgets/big_text.dart';
@@ -6,6 +9,8 @@ import 'package:watercooler/widgets/bottom_nav_widget.dart';
 import 'package:watercooler/widgets/icon_and_text_widget.dart';
 
 import 'package:watercooler/utils/globals.dart' as globals;
+
+import '../../utils/dimensions.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -16,6 +21,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   var activityStatus = "ONLINE";
+  var imageFile;
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +81,29 @@ class _ProfilePageState extends State<ProfilePage> {
                       );
                     }).toList(),
                   ),
+                  const SizedBox(width: 25),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     _getFromGallery();
+                  //   },
+                  //   child: Center(
+                  //     child: Container(
+                  //       width: Dimensions.width45,
+                  //       height: Dimensions.height45,
+                  //       child: Icon(
+                  //         Icons.camera_alt,
+                  //         color: Colors.white,
+                  //         size: Dimensions.iconSize24,
+                  //       ),
+                  //       decoration: BoxDecoration(
+                  //         borderRadius: BorderRadius.circular(
+                  //           Dimensions.radius15,
+                  //         ),
+                  //         color: AppColors.secondaryColor,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               )
             ],
@@ -83,5 +112,21 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       bottomNavigationBar: BottomNav(),
     );
+  }
+
+  // Get from gallery
+  _getFromGallery() async {
+    // Pick an image
+    final XFile? pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = File(pickedFile.path);
+      });
+    } else {
+      const snackbar =
+          SnackBar(content: Text("Sorry, that image is not acceptable"));
+      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    }
   }
 }
