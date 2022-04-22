@@ -51,7 +51,14 @@ class _UserChatPageState extends State<UserChatPage> {
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   final m = messages[index];
-                  return BigText(text: m);
+                  return Container(
+                    margin:
+                        const EdgeInsets.only(right: 30, top: 10, bottom: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [BigText(text: m)],
+                    ),
+                  );
                 },
               ),
               Container(
@@ -71,8 +78,10 @@ class _UserChatPageState extends State<UserChatPage> {
                       onTap: () {
                         message.text.isNotEmpty
                             ? setState(() {
-                                message.clear();
                                 messages.add(message.text);
+                                var newMessages = messages;
+                                message.clear();
+                                messages = newMessages;
                               })
                             : print("Message is empty");
                       },
